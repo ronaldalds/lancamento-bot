@@ -231,13 +231,13 @@ def lancamento(
 
 
     # Clique para efetivar a criação desta fatura.
-    # try:
-    #     instance.iframeForm()
-    #     instance.click('//button[@title="Clique para efetivar a criação desta fatura."]')
-    # except:
-    #     instance.close()
-    #     print(f"{error};{prefixo_log_lancamento};Clique para efetivar a criação desta fatura..")
-    #     return f"{error};{prefixo_log_lancamento};Clique para efetivar a criação desta fatura.."
+    try:
+        instance.iframeForm()
+        instance.click('//button[@title="Clique para efetivar a criação desta fatura."]')
+    except:
+        instance.close()
+        print(f"{error};{prefixo_log_lancamento};Clique para efetivar a criação desta fatura..")
+        return f"{error};{prefixo_log_lancamento};Clique para efetivar a criação desta fatura.."
 
     time.sleep(5)
     instance.close()
