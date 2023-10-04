@@ -18,7 +18,7 @@ def handle_start_lancamento(client: Client, message: Message):
         if message.document and (message.document.mime_type == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" or message.document.mime_type == "application/vnd.ms-excel"):
             running = True
             # Quantidade de itens na Pool
-            limite_threads = 5
+            limite_threads = 10
 
             # Baixe o arquivo XLSX
             file_path = message.download(in_memory=True)

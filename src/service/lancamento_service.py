@@ -144,6 +144,8 @@ def lancamento(
         instance.close()
         print(f"{error};{prefixo_log_lancamento};Botão Próxima etapa.")
         return f"{error};{prefixo_log_lancamento};Botão Próxima etapa."
+    
+    time.sleep(10)
 
     # Selecionar Plano de contas
     try:
@@ -186,6 +188,8 @@ def lancamento(
         instance.close()
         print(f"{error};{prefixo_log_lancamento};Clique para avançar a próxima etapa.")
         return f"{error};{prefixo_log_lancamento};Clique para avançar a próxima etapa."
+    
+    time.sleep(10)
     
     # Selecionar Liquidar agora
     try:
