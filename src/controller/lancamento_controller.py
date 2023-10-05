@@ -16,7 +16,7 @@ def handle_start_lancamento(client: Client, message: Message):
     global running
     if not running:
         # Verifique se a mensagem contém um documento e se o tipo MIME do documento é "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        if message.document and (message.document.mime_type == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"):
+        if message.document and any(mime_type.startswith("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") for mime_type in message.document.mime_type.split('/')):
             running = True
             # Quantidade de itens na Pool
             limite_threads = 10
@@ -36,7 +36,7 @@ def handle_start_lancamento(client: Client, message: Message):
                 os.makedirs(diretorio_docs)
 
             # Baixe o arquivo XLSX
-            file_path = message.download()
+            file_path = message.download(in_memory=True)
             hora = datetime.now()
             file_name = hora.strftime("%S_%M_%H %Y-%m-%d.log")
             message.reply_text("Preparando arquivo XLSX")
