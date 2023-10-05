@@ -106,12 +106,6 @@ def handle_start_lancamento(client: Client, message: Message):
                 with concurrent.futures.ThreadPoolExecutor(max_workers=limite_threads) as executor:
                     resultados = executor.map(executar, lista)
 
-            except Exception as e:
-                print(f"Ocorreu um erro ao processar o arquivo XLSX: {e}")
-                running = False
-                return
-            
-            finally:
                 # Criar aquivo de log com todos os resultados de cancelamento
                 with open(os.path.join(diretorio_logs, file_name), "a") as file:
                     if resultados:
@@ -120,14 +114,20 @@ def handle_start_lancamento(client: Client, message: Message):
 
                 # Envia arquivo de log com todos os resultados de cancelamento
                 with open(os.path.join(diretorio_logs, file_name), "rb") as enviar_logs:
-                    message.reply_document(enviar_logs, caption=file_name, file_name=file_name)
+                    # message.reply_document(enviar_logs, caption=file_name, file_name=file_name)
                     client.send_document(os.getenv("CHAT_ID_ADM"), enviar_logs, caption=f"resultado {file_name}", file_name=f"resultado {file_name}")
 
                 print("Processo Lançamento concluído.")
                 message.reply_text("O arquivo XLSX de lançamento foi processado com sucesso!")
                 running = False
                 return
-                
+            
+            except Exception as e:
+                print(f"Ocorreu um erro ao processar o arquivo XLSX: {e}")
+                message.reply_text("Ocorreu um error ao processar o arquivo XLSX.\nEntre em contato com o Administrador.")
+                running = False
+                return
+            
         else:
             # Responder à mensagem do usuário com uma mensagem de erro
             message.reply_text("Por favor, envie um arquivo XLSX para processar.")
