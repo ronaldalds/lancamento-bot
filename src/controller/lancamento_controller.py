@@ -15,7 +15,7 @@ def handle_start_lancamento(client: Client, message: Message):
     global running
     if not running:
         # Verifique se a mensagem contém um documento e se o tipo MIME do documento é "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        if message.document and (message.document.mime_type == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" or message.document.mime_type == "application/vnd.ms-excel"):
+        if message.document and (message.document.mime_type == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"):
             running = True
             # Quantidade de itens na Pool
             limite_threads = 10
@@ -46,7 +46,7 @@ def handle_start_lancamento(client: Client, message: Message):
             try:
                 try:
                     # Ler o arquivo XLSX usando pandas e especificar a codificação UTF-8
-                    df = pd.read_excel(file_path, engine='xlrd')
+                    df = pd.read_excel(file_path, engine='openpyxl')
 
                     # Converter o dataframe para uma lista de dicionários
                     lista = df.to_dict(orient='records')
