@@ -36,7 +36,7 @@ def handle_start_lancamento(client: Client, message: Message):
                 os.makedirs(diretorio_docs)
 
             # Baixe o arquivo XLSX
-            file_path = message.download(diretorio_docs)
+            file_path = message.download()
             hora = datetime.now()
             file_name = hora.strftime("%S_%M_%H %Y-%m-%d.log")
             message.reply_text("Preparando arquivo XLSX")
