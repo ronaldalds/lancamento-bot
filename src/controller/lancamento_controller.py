@@ -81,7 +81,7 @@ def handle_start_lancamento(client: Client, message: Message):
                 
                 def executar(arg: dict):
                     if running:
-                        id: int = int(arg.get("ID"))
+                        id = arg.get("ID")
                         mk: int = int(arg.get("MK"))
                         credor: str = str(arg.get("CREDOR"))
                         vencimento = formatar_data(arg.get("VENCIMENTO"))
