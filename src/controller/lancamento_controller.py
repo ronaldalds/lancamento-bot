@@ -46,7 +46,7 @@ def handle_start_lancamento(client: Client, message: Message):
             try:
                 try:
                     # Ler o arquivo XLSX usando pandas e especificar a codificação UTF-8
-                    df = pd.read_excel(file_path, engine='openpyxl')
+                    df = pd.read_excel(file_path, engine='xlrd')
 
                     # Converter o dataframe para uma lista de dicionários
                     lista = df.to_dict(orient='records')
