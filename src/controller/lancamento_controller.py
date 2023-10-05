@@ -127,7 +127,7 @@ def handle_start_lancamento(client: Client, message: Message):
                 message.reply_text("Ocorreu um error ao processar o arquivo XLSX.\nEntre em contato com o Administrador.")
                 running = False
                 return
-            
+        
         else:
             # Responder à mensagem do usuário com uma mensagem de erro
             message.reply_text("Por favor, envie um arquivo XLSX para processar.")
