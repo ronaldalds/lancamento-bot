@@ -21,13 +21,6 @@ def handle_start_lancamento(client: Client, message: Message):
             # Quantidade de itens na Pool
             limite_threads = 10
 
-            # Baixe o arquivo XLSX
-            file_path = message.download(in_memory=True)
-            hora = datetime.now()
-            file_name = hora.strftime("%S_%M_%H %Y-%m-%d.log")
-            message.reply_text("Preparando arquivo XLSX")
-            agente = f"{message.from_user.first_name}.{message.from_user.last_name}"
-
             # caminho pasta de logs
             diretorio_logs = os.path.join(os.path.dirname(__file__), 'logs')
 
@@ -41,23 +34,23 @@ def handle_start_lancamento(client: Client, message: Message):
             # cria pasta de docs em caso de nao existir
             if not os.path.exists(diretorio_docs):
                 os.makedirs(diretorio_docs)
+
+            # Baixe o arquivo XLSX
+            file_path = message.download(diretorio_docs)
+            hora = datetime.now()
+            file_name = hora.strftime("%S_%M_%H %Y-%m-%d.log")
+            message.reply_text("Preparando arquivo XLSX")
+            agente = f"{message.from_user.first_name}.{message.from_user.last_name}"
             
             resultados = []
             # Processar o arquivo XLSX conforme necessário
             try:
                 try:
                     # Ler o arquivo XLSX usando pandas e especificar a codificação UTF-8
-                    # df = pd.read_excel(file_path)
-                    workbook = load_workbook(file_path)
-                    sheet = workbook['Sheet1']
+                    df = pd.read_excel(file_path)
 
                     # Converter o dataframe para uma lista de dicionários
-                    # lista = df.to_dict(orient='records')
-                    lista = {}
-                    for row in sheet.iter_rows(values_only=True):
-                        key = row[0]  # Suponha que a primeira coluna seja a chave
-                        value = row[1]  # Suponha que a segunda coluna seja o valor
-                        lista[key] = value
+                    lista = df.to_dict(orient='records')
 
 
                     # Verificar se a chave 'MK' contém valor NaN
