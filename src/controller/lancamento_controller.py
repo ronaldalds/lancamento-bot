@@ -16,7 +16,10 @@ def handle_start_lancamento(client: Client, message: Message):
     global running
     if not running:
         # Verifique se a mensagem contém um documento e se o tipo MIME do documento é "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        if message.document and any(mime_type.startswith("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") for mime_type in message.document.mime_type.split('/')):
+        if message.document and (
+            message.document.mime_type.startswith("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") or
+            message.document.mime_type == "application/vnd.ms-excel"
+        ):
             running = True
             # Quantidade de itens na Pool
             limite_threads = 10
