@@ -23,7 +23,7 @@ def lancamento(
         conta,
     ):
     hora = datetime.now()
-    print(f'Iniciou lançamento {hora.strftime("%d/%m/%Y %H:%M")} Negócio:{negocio} Valor:{valor} Descrição:{descricao}')
+    print(f'Iniciou lançamento {hora.strftime("%d/%m/%Y %H:%M")} ID:{id} Negócio:{negocio} Valor:{valor} Descrição:{descricao}')
     error = f"\033[91mERROR\033[0m;LANÇAMENTO;{hora.strftime('%d/%m/%Y %H:%M')}"
     sucess = f"\033[92mSUCESS\033[0m;LANÇAMENTO;{hora.strftime('%d/%m/%Y %H:%M')}"
 

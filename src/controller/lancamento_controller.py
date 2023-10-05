@@ -81,19 +81,19 @@ def handle_start_lancamento(client: Client, message: Message):
                 
                 def executar(arg: dict):
                     if running:
-                        try:
-                            id: int = int(arg.get("ID"))
-                            mk: int = int(arg.get("MK"))
-                            credor: str = str(arg.get("CREDOR"))
-                            vencimento = formatar_data(arg.get("VENCIMENTO"))
-                            efetiva = formatar_data(arg.get("EFETIVA"))
-                            descricao: str = str(arg.get("DESCRICAO"))
-                            plano_conta: str = str(arg.get("PLANO_CONTA"))
-                            combinacao: str = str(arg.get("COMBINACAO"))
-                            negocio: str = str(arg.get("NEGOCIO"))
-                            valor = formatar_valor(arg.get("VALOR"))
-                            conta: str = str(arg.get("CONTA"))
+                        id: int = int(arg.get("ID"))
+                        mk: int = int(arg.get("MK"))
+                        credor: str = str(arg.get("CREDOR"))
+                        vencimento = formatar_data(arg.get("VENCIMENTO"))
+                        efetiva = formatar_data(arg.get("EFETIVA"))
+                        descricao: str = str(arg.get("DESCRICAO"))
+                        plano_conta: str = str(arg.get("PLANO_CONTA"))
+                        combinacao: str = str(arg.get("COMBINACAO"))
+                        negocio: str = str(arg.get("NEGOCIO"))
+                        valor: str = str(arg.get("VALOR"))
+                        conta: str = str(arg.get("CONTA"))
 
+                        try:
                             return lancamento(
                                 id = id,
                                 mk = mk,
@@ -104,13 +104,13 @@ def handle_start_lancamento(client: Client, message: Message):
                                 plano_conta = plano_conta[0:14],
                                 combinacao = combinacao[:9],
                                 negocio = negocio,
-                                valor = valor,
+                                valor = valor.replace(".", ","),
                                 conta = conta,
                                 )
                         except Exception as e:
-                            print(f'Error executar na função lançamento:ID:{int(arg.get("ID"))} MK:{int(arg.get("MK"))} Negócio:{arg.get("NEGOCIO")} Valor:{arg.get("VALOR")} Descrição:{arg.get("DESCRICAO")} {e}')
+                            print(f'Error executar na função lançamento:ID:{id} MK:{mk} Negócio:{negocio} Valor:{valor} Descrição:{descricao} {e}')
                     else:
-                        message.reply_text(f'Lançamento ID:{int(arg.get("ID"))} MK:{int(arg.get("MK"))} Negócio:{arg.get("NEGOCIO")} Valor:{arg.get("VALOR")} Descrição:{arg.get("DESCRICAO")} parado.')
+                        message.reply_text(f'Lançamento ID:{id} MK:{mk} Negócio:{negocio} Valor:{valor} Descrição:{descricao} parado.')
                 
                 # Criando Pool
                 with concurrent.futures.ThreadPoolExecutor(max_workers=limite_threads) as executor:
