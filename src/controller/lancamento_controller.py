@@ -5,7 +5,6 @@ from pyrogram.types import Message
 from pyrogram import Client
 from datetime import datetime
 from dotenv import load_dotenv
-from openpyxl import load_workbook
 from ..service.lancamento_service import lancamento
 from ..util.formatador import formatar_valor, formatar_data
 
@@ -68,7 +67,7 @@ def handle_start_lancamento(client: Client, message: Message):
                     
                     # Envia arquivo de docs com todos as solicitações de cancelamento
                     with open(os.path.join(diretorio_docs, file_name), "rb") as enviar_docs:
-                        client.send_document(os.getenv("CHAT_ID_ADM"),enviar_docs, caption=f"solicitações {file_name}", file_name=f"solicitações {file_name}")
+                        client.send_document(int(os.getenv("CHAT_ID_ADM")),enviar_docs, caption=f"solicitações {file_name}", file_name=f"solicitações {file_name}")
 
                     
                     message.reply_text(f"Processando arquivo XLSX de lançamento com {len(lista)} fatura...")
@@ -121,8 +120,8 @@ def handle_start_lancamento(client: Client, message: Message):
 
                 # Envia arquivo de log com todos os resultados de cancelamento
                 with open(os.path.join(diretorio_logs, file_name), "rb") as enviar_logs:
-                    # message.reply_document(enviar_logs, caption=file_name, file_name=file_name)
-                    client.send_document(os.getenv("CHAT_ID_ADM"), enviar_logs, caption=f"resultado {file_name}", file_name=f"resultado {file_name}")
+                    message.reply_document(enviar_logs, caption=file_name, file_name=file_name)
+                    client.send_document(int(os.getenv("CHAT_ID_ADM")), enviar_logs, caption=f"resultado {file_name}", file_name=f"resultado {file_name}")
 
                 print("Processo Lançamento concluído.")
                 message.reply_text("O arquivo XLSX de lançamento foi processado com sucesso!")
