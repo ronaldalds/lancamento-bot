@@ -15,10 +15,12 @@ running = False
 def handle_start_lancamento(client: Client, message: Message):
     global running
     if not running:
+        print(message.document.mime_type)
         # Verifique se a mensagem contém um documento e se o tipo MIME do documento é "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        if message.document and (
+        if message.document and (                  
             message.document.mime_type.startswith("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") or
-            message.document.mime_type == "application/vnd.ms-excel"
+            message.document.mime_type == "application/vnd.ms-excel" or
+            message.document.mime_type == "application/wps-office.xlsx"
         ):
             running = True
             # Quantidade de itens na Pool
