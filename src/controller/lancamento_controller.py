@@ -5,6 +5,7 @@ from pyrogram.types import Message
 from pyrogram import Client
 from datetime import datetime
 from dotenv import load_dotenv
+from openpyxl import load_workbook
 from ..service.lancamento_service import lancamento
 from ..util.formatador import formatar_valor, formatar_data
 
@@ -46,10 +47,18 @@ def handle_start_lancamento(client: Client, message: Message):
             try:
                 try:
                     # Ler o arquivo XLSX usando pandas e especificar a codificação UTF-8
-                    df = pd.read_excel(file_path)
+                    # df = pd.read_excel(file_path)
+                    workbook = load_workbook(file_path)
+                    sheet = workbook['Sheet1']
 
                     # Converter o dataframe para uma lista de dicionários
-                    lista = df.to_dict(orient='records')
+                    # lista = df.to_dict(orient='records')
+                    lista = {}
+                    for row in sheet.iter_rows(values_only=True):
+                        key = row[0]  # Suponha que a primeira coluna seja a chave
+                        value = row[1]  # Suponha que a segunda coluna seja o valor
+                        lista[key] = value
+
 
                     # Verificar se a chave 'MK' contém valor NaN
                     lista = [dados for dados in lista if not pd.isna(dados.get('MK'))]
