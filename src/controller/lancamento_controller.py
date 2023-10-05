@@ -6,7 +6,7 @@ from pyrogram import Client
 from datetime import datetime
 from dotenv import load_dotenv
 from ..service.lancamento_service import lancamento
-from ..util.formatador import formatar_valor, formatar_data
+from ..util.formatador import formatar_data
 
 load_dotenv()
 running = False
@@ -23,7 +23,7 @@ def handle_start_lancamento(client: Client, message: Message):
         ):
             running = True
             # Quantidade de itens na Pool
-            limite_threads = 10
+            limite_threads = 5
 
             # Baixe o arquivo XLSX
             file_path = message.download(in_memory=True)
@@ -93,22 +93,32 @@ def handle_start_lancamento(client: Client, message: Message):
                         valor: str = str(arg.get("VALOR"))
                         conta: str = str(arg.get("CONTA"))
 
+                        warning = f"\033[93mWARNING\033[0m;LANÇAMENTO;{hora.strftime('%d/%m/%Y %H:%M')}"
+                        error = f"\033[91mERROR\033[0m;LANÇAMENTO;{hora.strftime('%d/%m/%Y %H:%M')}"
+                        sucess = f"\033[92mSUCESS\033[0m;LANÇAMENTO;{hora.strftime('%d/%m/%Y %H:%M')}"
+                        prefixo_log = f'ID:{id};Negócio:{negocio};Valor:{valor};Descrição:{descricao}'
+                        item = f"ID:{id}-MK:{mk}-Plano:{plano_conta[:14]}-Combinação:{combinacao[:9]}-Vct:{vencimento}-Efetiva:{efetiva}-Negócio:{negocio}-Valor:{valor.replace('.', ',')}-Descrição:{descricao}"
+
                         try:
+                            print(f'Iniciou {item}')
                             return lancamento(
-                                id = id,
                                 mk = mk,
                                 credor = credor,
                                 vencimento = vencimento,
                                 efetiva = efetiva,
                                 descricao = descricao,
-                                plano_conta = plano_conta[0:14],
+                                plano_conta = plano_conta[:14],
                                 combinacao = combinacao[:9],
                                 negocio = negocio,
-                                valor = valor.replace(".", ","),
+                                valor = valor.replace('.', ','),
                                 conta = conta,
+                                error = error,
+                                sucess = sucess,
+                                prefixo_log = prefixo_log,
                                 )
                         except Exception as e:
-                            print(f'Error executar na função lançamento:ID:{id} MK:{mk} Negócio:{negocio} Valor:{valor} Descrição:{descricao} {e}')
+                            print(f'Error {item}=={e}')
+                            return f"{warning};{prefixo_log};Error na execução"
                     else:
                         message.reply_text(f'Lançamento ID:{id} MK:{mk} Negócio:{negocio} Valor:{valor} Descrição:{descricao} parado.')
                 

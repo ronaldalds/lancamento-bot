@@ -1,6 +1,5 @@
 import time
 import os
-from datetime import datetime
 from dotenv import load_dotenv
 from selenium.webdriver.common.keys import Keys
 from ..api.mk.mk_driver import Mk
@@ -10,7 +9,6 @@ from ..api.mk.aside.aside_financeiro import GerenciadorDeContasAPagar
 load_dotenv()
 
 def lancamento(
-        id,
         mk,
         credor,
         vencimento,
@@ -21,13 +19,10 @@ def lancamento(
         negocio,
         valor,
         conta,
+        error,
+        sucess,
+        prefixo_log,
     ):
-    hora = datetime.now()
-    print(f'Iniciou lançamento {hora.strftime("%d/%m/%Y %H:%M")} ID:{id} Negócio:{negocio} Valor:{valor} Descrição:{descricao}')
-    error = f"\033[91mERROR\033[0m;LANÇAMENTO;{hora.strftime('%d/%m/%Y %H:%M')}"
-    sucess = f"\033[92mSUCESS\033[0m;LANÇAMENTO;{hora.strftime('%d/%m/%Y %H:%M')}"
-
-    prefixo_log_lancamento = f'ID:{id};Negócio:{negocio};Valor:{valor};Descrição:{descricao}'
 
     if mk == 1:
         instance = Mk(
@@ -42,8 +37,8 @@ def lancamento(
             url=os.getenv("URL_MK3"),
         )
     else:
-        print(f"{error};{prefixo_log_lancamento};Não foi possível criar instancia do mk...")
-        return f"{error};{prefixo_log_lancamento};Não foi possível criar instancia do mk..."
+        print(f"{error};{prefixo_log};Não foi possível criar instancia do mk...")
+        return f"{error};{prefixo_log};Não foi possível criar instancia do mk..."
 
     financeiro = Financeiro()
     conta_pagar: GerenciadorDeContasAPagar = GerenciadorDeContasAPagar()
@@ -53,8 +48,8 @@ def lancamento(
         instance.login()
     except:
         instance.close()
-        print(f"{error};{prefixo_log_lancamento};Login MK.")
-        return f"{error};{prefixo_log_lancamento};Login MK."
+        print(f"{error};{prefixo_log};Login MK.")
+        return f"{error};{prefixo_log};Login MK."
     
     # Fecha cadastro
     try:
@@ -69,8 +64,8 @@ def lancamento(
         instance.click(financeiro.xpath())
     except:
         instance.close()
-        print(f"{error};{prefixo_log_lancamento};Moeda Financeiro.")
-        return f"{error};{prefixo_log_lancamento};Moeda Financeiro."
+        print(f"{error};{prefixo_log};Moeda Financeiro.")
+        return f"{error};{prefixo_log};Moeda Financeiro."
 
     # Aside Gerenciador de Contas a Pagar
     try:
@@ -78,8 +73,8 @@ def lancamento(
         instance.click(conta_pagar.xpath())
     except:
         instance.close()
-        print(f"{error};{prefixo_log_lancamento};Aside Gerenciador de Contas a Pagar.")
-        return f"{error};{prefixo_log_lancamento};Aside Gerenciador de Contas a Pagar."
+        print(f"{error};{prefixo_log};Aside Gerenciador de Contas a Pagar.")
+        return f"{error};{prefixo_log};Aside Gerenciador de Contas a Pagar."
 
     # Botão Faturas pendentes.
     try:
@@ -87,8 +82,8 @@ def lancamento(
         instance.click("//button[@title='Faturas pendentes.']")
     except:
         instance.close()
-        print(f"{error};{prefixo_log_lancamento};Botão Fatura pendentes.")
-        return f"{error};{prefixo_log_lancamento};Botão Fatura pendentes."
+        print(f"{error};{prefixo_log};Botão Fatura pendentes.")
+        return f"{error};{prefixo_log};Botão Fatura pendentes."
 
     # Botão Adicionar fatura
     try:
@@ -96,8 +91,8 @@ def lancamento(
         instance.click("//button[@title='Adicionar fatura']")
     except:
         instance.close()
-        print(f"{error};{prefixo_log_lancamento};Botão Adicionar fatura.")
-        return f"{error};{prefixo_log_lancamento};Botão Adicionar fatura."
+        print(f"{error};{prefixo_log};Botão Adicionar fatura.")
+        return f"{error};{prefixo_log};Botão Adicionar fatura."
 
     # Selecionar Credor
     try:
@@ -107,8 +102,8 @@ def lancamento(
         instance.click('//select[@id="lookupInput"]/option[2]')
     except:
         instance.close()
-        print(f"{error};{prefixo_log_lancamento};Selecionar Credor.")
-        return f"{error};{prefixo_log_lancamento};Selecionar Credor."
+        print(f"{error};{prefixo_log};Selecionar Credor.")
+        return f"{error};{prefixo_log};Selecionar Credor."
 
     # Escrever Descrição
     try:
@@ -116,8 +111,8 @@ def lancamento(
         instance.write('//div[@class="HTMLTabContainer"]/div[2]/div[9]/div[2]/input', f"{descricao}")
     except:
         instance.close()
-        print(f"{error};{prefixo_log_lancamento};Escrever Descrição.")
-        return f"{error};{prefixo_log_lancamento};Escrever Descrição."
+        print(f"{error};{prefixo_log};Escrever Descrição.")
+        return f"{error};{prefixo_log};Escrever Descrição."
 
     # Escrever Valor
     try:
@@ -125,8 +120,8 @@ def lancamento(
         instance.write('//div[@class="HTMLTabContainer"]/div[2]/div[11]/div[2]/input', f"{valor}")
     except:
         instance.close()
-        print(f"{error};{prefixo_log_lancamento};Escrever Valor.")
-        return f"{error};{prefixo_log_lancamento};Escrever Valor."
+        print(f"{error};{prefixo_log};Escrever Valor.")
+        return f"{error};{prefixo_log};Escrever Valor."
 
     # Escrever Vencimento
     try:
@@ -134,8 +129,8 @@ def lancamento(
         instance.write('//div[@class="HTMLTabContainer"]/div[2]/div[16]/div[2]/input', f"{vencimento}")
     except:
         instance.close()
-        print(f"{error};{prefixo_log_lancamento};Escrever Vencimento.")
-        return f"{error};{prefixo_log_lancamento};Escrever Vencimento."
+        print(f"{error};{prefixo_log};Escrever Vencimento.")
+        return f"{error};{prefixo_log};Escrever Vencimento."
 
     # Botão Próxima etapa
     try:
@@ -143,11 +138,9 @@ def lancamento(
         instance.click('//div[@class="HTMLTabContainer"]/div[2]//button[@title="Próxima etapa"]')
     except:
         instance.close()
-        print(f"{error};{prefixo_log_lancamento};Botão Próxima etapa.")
-        return f"{error};{prefixo_log_lancamento};Botão Próxima etapa."
+        print(f"{error};{prefixo_log};Botão Próxima etapa.")
+        return f"{error};{prefixo_log};Botão Próxima etapa."
     
-    time.sleep(10)
-
     # Selecionar Plano de contas
     try:
         instance.iframeForm()
@@ -156,8 +149,8 @@ def lancamento(
         instance.click('//select[@id="lookupInput"]/option[2]')
     except:
         instance.close()
-        print(f"{error};{prefixo_log_lancamento};Selecionar Plano de contas.")
-        return f"{error};{prefixo_log_lancamento};Selecionar Plano de contas."
+        print(f"{error};{prefixo_log};Selecionar Plano de contas.")
+        return f"{error};{prefixo_log};Selecionar Plano de contas."
 
     # Selecionar Combinação de centro de custos
     try:
@@ -167,8 +160,8 @@ def lancamento(
         instance.click('//select[@id="lookupInput"]/option[2]')
     except:
         instance.close()
-        print(f"{error};{prefixo_log_lancamento};Selecionar Combinação de centro de custos.")
-        return f"{error};{prefixo_log_lancamento};Selecionar Combinação de centro de custos."
+        print(f"{error};{prefixo_log};Selecionar Combinação de centro de custos.")
+        return f"{error};{prefixo_log};Selecionar Combinação de centro de custos."
 
     # Selecionar Negócios
     try:
@@ -178,8 +171,8 @@ def lancamento(
         instance.click('//select[@id="lookupInput"]/option[2]')
     except:
         instance.close()
-        print(f"{error};{prefixo_log_lancamento};Selecionar Negócios.")
-        return f"{error};{prefixo_log_lancamento};Selecionar Negócios."
+        print(f"{error};{prefixo_log};Selecionar Negócios.")
+        return f"{error};{prefixo_log};Selecionar Negócios."
 
     # Clique para avançar a próxima etapa
     try:
@@ -187,10 +180,8 @@ def lancamento(
         instance.click('//button[@title="Clique para avançar a próxima etapa"]')
     except:
         instance.close()
-        print(f"{error};{prefixo_log_lancamento};Clique para avançar a próxima etapa.")
-        return f"{error};{prefixo_log_lancamento};Clique para avançar a próxima etapa."
-    
-    time.sleep(10)
+        print(f"{error};{prefixo_log};Clique para avançar a próxima etapa.")
+        return f"{error};{prefixo_log};Clique para avançar a próxima etapa."
     
     # Selecionar Liquidar agora
     try:
@@ -200,8 +191,8 @@ def lancamento(
         instance.click('//select[@id="lookupInput"]/option[2]')
     except:
         instance.close()
-        print(f"{error};{prefixo_log_lancamento};Selecionar Liquidar agora.")
-        return f"{error};{prefixo_log_lancamento};Selecionar Liquidar agora."
+        print(f"{error};{prefixo_log};Selecionar Liquidar agora.")
+        return f"{error};{prefixo_log};Selecionar Liquidar agora."
     
     # Escrever Efetivação
     try:
@@ -209,8 +200,8 @@ def lancamento(
         instance.write('//input[@title="Data de efetivação desta despesa"]', f"{efetiva}")
     except:
         instance.close()
-        print(f"{error};{prefixo_log_lancamento};Escrever Efetivação.")
-        return f"{error};{prefixo_log_lancamento};Escrever Efetivação."
+        print(f"{error};{prefixo_log};Escrever Efetivação.")
+        return f"{error};{prefixo_log};Escrever Efetivação."
     
     # Selecionar Como pagar
     try:
@@ -220,8 +211,8 @@ def lancamento(
         instance.click('//select[@id="lookupInput"]/option[2]')
     except:
         instance.close()
-        print(f"{error};{prefixo_log_lancamento};Selecionar Como pagar.")
-        return f"{error};{prefixo_log_lancamento};Selecionar Como pagar."
+        print(f"{error};{prefixo_log};Selecionar Como pagar.")
+        return f"{error};{prefixo_log};Selecionar Como pagar."
     
     # Selecionar Conta banco
     try:
@@ -231,8 +222,8 @@ def lancamento(
         instance.click('//select[@id="lookupInput"]/option[2]')
     except:
         instance.close()
-        print(f"{error};{prefixo_log_lancamento};Selecionar Conta banco.")
-        return f"{error};{prefixo_log_lancamento};Selecionar Conta banco."
+        print(f"{error};{prefixo_log};Selecionar Conta banco.")
+        return f"{error};{prefixo_log};Selecionar Conta banco."
 
 
     # Clique para efetivar a criação desta fatura.
@@ -241,10 +232,10 @@ def lancamento(
         instance.click('//button[@title="Clique para efetivar a criação desta fatura."]')
     except:
         instance.close()
-        print(f"{error};{prefixo_log_lancamento};Clique para efetivar a criação desta fatura..")
-        return f"{error};{prefixo_log_lancamento};Clique para efetivar a criação desta fatura.."
+        print(f"{error};{prefixo_log};Clique para efetivar a criação desta fatura..")
+        return f"{error};{prefixo_log};Clique para efetivar a criação desta fatura.."
 
     time.sleep(5)
     instance.close()
-    print(f'{sucess};{prefixo_log_lancamento};Lançamento da fatura conluído')
-    return f'{sucess};{prefixo_log_lancamento};Lançamento da fatura conluído'
+    print(f'{sucess};{prefixo_log};Lançamento da fatura conluído')
+    return f'{sucess};{prefixo_log};Lançamento da fatura conluído'
