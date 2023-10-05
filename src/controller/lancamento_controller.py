@@ -25,6 +25,15 @@ def handle_start_lancamento(client: Client, message: Message):
             # Quantidade de itens na Pool
             limite_threads = 10
 
+            # Baixe o arquivo XLSX
+            file_path = message.download(in_memory=True)
+            hora = datetime.now()
+            file_name = hora.strftime("%S_%M_%H %Y-%m-%d.log")
+            message.reply_text("Preparando arquivo XLSX")
+            agente = f"{message.from_user.first_name}.{message.from_user.last_name}"
+            
+            adm = int(os.getenv("CHAT_ID_ADM"))
+
             # caminho pasta de logs
             diretorio_logs = os.path.join(os.path.dirname(__file__), 'logs')
 
@@ -39,13 +48,6 @@ def handle_start_lancamento(client: Client, message: Message):
             if not os.path.exists(diretorio_docs):
                 os.makedirs(diretorio_docs)
 
-            # Baixe o arquivo XLSX
-            file_path = message.download(in_memory=True)
-            hora = datetime.now()
-            file_name = hora.strftime("%S_%M_%H %Y-%m-%d.log")
-            message.reply_text("Preparando arquivo XLSX")
-            agente = f"{message.from_user.first_name}.{message.from_user.last_name}"
-            
             resultados = []
             # Processar o arquivo XLSX conforme necessário
             try:
@@ -63,11 +65,11 @@ def handle_start_lancamento(client: Client, message: Message):
                     # Criar aquivo de log com todos os vencimentos enviados para cancelamento
                     with open(os.path.join(diretorio_docs, file_name), "a") as pedido:
                         for c,arg in enumerate(lista):
-                            pedido.write(f"{(c + 1):03};Lançamento;MK:{int(arg.get('MK'))};Negócio:{arg.get('NEGOCIO')};Valor:{arg.get('VALOR')};Descrição:{arg.get('DESCRICAO')};Agente:{agente}\n")
+                            pedido.write(f"{(c + 1):03};Lançamento;ID:{int(arg.get('ID'))};MK:{int(arg.get('MK'))};Negócio:{arg.get('NEGOCIO')};Valor:{arg.get('VALOR')};Descrição:{arg.get('DESCRICAO')};Agente:{agente}\n")
                     
                     # Envia arquivo de docs com todos as solicitações de cancelamento
                     with open(os.path.join(diretorio_docs, file_name), "rb") as enviar_docs:
-                        client.send_document(int(os.getenv("CHAT_ID_ADM")),enviar_docs, caption=f"solicitações {file_name}", file_name=f"solicitações {file_name}")
+                        client.send_document(adm, enviar_docs, caption=f"solicitações {file_name}", file_name=f"solicitações {file_name}")
 
                     
                     message.reply_text(f"Processando arquivo XLSX de lançamento com {len(lista)} fatura...")
@@ -80,33 +82,35 @@ def handle_start_lancamento(client: Client, message: Message):
                 def executar(arg: dict):
                     if running:
                         try:
-                            mk = arg.get("MK")
-                            credor = arg.get("CREDOR")
+                            id: int = int(arg.get("ID"))
+                            mk: int = int(arg.get("MK"))
+                            credor: str = str(arg.get("CREDOR"))
                             vencimento = formatar_data(arg.get("VENCIMENTO"))
                             efetiva = formatar_data(arg.get("EFETIVA"))
-                            descricao = arg.get("DESCRICAO")
-                            plano_conta: str = arg.get("PLANO_CONTA")
-                            combinacao: str = arg.get("COMBINACAO")
-                            negocio = arg.get("NEGOCIO")
+                            descricao: str = str(arg.get("DESCRICAO"))
+                            plano_conta: str = str(arg.get("PLANO_CONTA"))
+                            combinacao: str = str(arg.get("COMBINACAO"))
+                            negocio: str = str(arg.get("NEGOCIO"))
                             valor = formatar_valor(arg.get("VALOR"))
-                            conta: str = arg.get("CONTA")
+                            conta: str = str(arg.get("CONTA"))
 
                             return lancamento(
+                                id = id,
                                 mk = mk,
                                 credor = credor,
                                 vencimento = vencimento,
                                 efetiva = efetiva,
                                 descricao = descricao,
-                                plano_conta = plano_conta.split(" ")[0],
+                                plano_conta = plano_conta[0:14],
                                 combinacao = combinacao[:9],
                                 negocio = negocio,
                                 valor = valor,
                                 conta = conta,
                                 )
                         except Exception as e:
-                            print(f'Error executar na função lançamento: MK:{int(arg.get("MK"))} Negócio:{arg.get("NEGOCIO")} Valor:{arg.get("VALOR")} Descrição:{arg.get("DESCRIÇÃO")} {e}')
+                            print(f'Error executar na função lançamento:ID:{int(arg.get("ID"))} MK:{int(arg.get("MK"))} Negócio:{arg.get("NEGOCIO")} Valor:{arg.get("VALOR")} Descrição:{arg.get("DESCRICAO")} {e}')
                     else:
-                        message.reply_text(f'Lançamento MK:{int(arg.get("MK"))} Negócio:{arg.get("NEGOCIO")} Valor:{arg.get("VALOR")} Descrição:{arg.get("DESCRIÇÃO")} parado.')
+                        message.reply_text(f'Lançamento ID:{int(arg.get("ID"))} MK:{int(arg.get("MK"))} Negócio:{arg.get("NEGOCIO")} Valor:{arg.get("VALOR")} Descrição:{arg.get("DESCRICAO")} parado.')
                 
                 # Criando Pool
                 with concurrent.futures.ThreadPoolExecutor(max_workers=limite_threads) as executor:
@@ -121,7 +125,7 @@ def handle_start_lancamento(client: Client, message: Message):
                 # Envia arquivo de log com todos os resultados de cancelamento
                 with open(os.path.join(diretorio_logs, file_name), "rb") as enviar_logs:
                     message.reply_document(enviar_logs, caption=file_name, file_name=file_name)
-                    client.send_document(int(os.getenv("CHAT_ID_ADM")), enviar_logs, caption=f"resultado {file_name}", file_name=f"resultado {file_name}")
+                    client.send_document(adm, enviar_logs, caption=f"resultado {file_name}", file_name=f"resultado {file_name}")
 
                 print("Processo Lançamento concluído.")
                 message.reply_text("O arquivo XLSX de lançamento foi processado com sucesso!")

@@ -10,6 +10,7 @@ from ..api.mk.aside.aside_financeiro import GerenciadorDeContasAPagar
 load_dotenv()
 
 def lancamento(
+        id,
         mk,
         credor,
         vencimento,
@@ -26,7 +27,7 @@ def lancamento(
     error = f"\033[91mERROR\033[0m;LANÇAMENTO;{hora.strftime('%d/%m/%Y %H:%M')}"
     sucess = f"\033[92mSUCESS\033[0m;LANÇAMENTO;{hora.strftime('%d/%m/%Y %H:%M')}"
 
-    prefixo_log_lancamento = f'Negócio:{negocio};Valor:{valor};Descrição:{descricao}'
+    prefixo_log_lancamento = f'ID:{id};Negócio:{negocio};Valor:{valor};Descrição:{descricao}'
 
     if mk == 1:
         instance = Mk(

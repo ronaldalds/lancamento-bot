@@ -7,16 +7,6 @@ ENV TZ=America/Fortaleza
 # Instala o Python, pip e xvfb
 RUN apt-get update && apt-get install -y python3 python3-pip xvfb
 
-# Adicione o repositório do Python 3.11
-RUN apt-get update && apt-get install -y software-properties-common
-RUN add-apt-repository ppa:deadsnakes/ppa
-
-# Atualize o sistema
-RUN apt-get update
-
-# Instale o Python 3.11
-RUN apt-get install -y python3.11
-
 WORKDIR /app
 
 COPY requirements.txt .
