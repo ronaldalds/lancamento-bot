@@ -25,7 +25,7 @@ class Mk:
         options.add_argument("--port=4444")
         options.add_argument('--no-sandbox')
         options.add_argument(f"--window-size={largura},{altura}")
-        # options.add_argument('--headless')
+        options.add_argument('--headless')
         self._driver = webdriver.Chrome(
             service=Service(ChromeDriverManager().install()),
             options=options,
