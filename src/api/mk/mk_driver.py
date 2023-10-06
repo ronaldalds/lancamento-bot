@@ -25,7 +25,7 @@ class Mk:
         options.add_argument("--port=4444")
         options.add_argument('--no-sandbox')
         options.add_argument(f"--window-size={largura},{altura}")
-        options.add_argument('--headless')
+        # options.add_argument('--headless')
         self._driver = webdriver.Chrome(
             service=Service(ChromeDriverManager().install()),
             options=options,
@@ -53,9 +53,8 @@ class Mk:
 
     def write(self, xpath: str, text: str):
         time.sleep(5)
-        self._mouse.move_to_element(self._driver.find_element(
-            By.XPATH, xpath
-        )).click().send_keys(text).perform()
+        self._mouse.move_to_element(self._driver.find_element(By.XPATH, xpath)) \
+            .click().send_keys(text).perform()
         time.sleep(5)
 
     def login(self):

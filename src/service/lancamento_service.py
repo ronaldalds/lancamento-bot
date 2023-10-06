@@ -117,7 +117,7 @@ def lancamento(
     # Escrever Valor
     try:
         instance.iframeForm()
-        instance.write('//div[@class="HTMLTabContainer"]/div[2]/div[11]/div[2]/input', f"{valor}")
+        instance.write('//div[@class="HTMLTabContainer"]/div[2]/div[11]/div[2]/input', f"-{valor}")
     except:
         instance.close()
         print(f"{error};{prefixo_log};Escrever Valor.")
@@ -126,27 +126,49 @@ def lancamento(
     # Escrever Vencimento
     try:
         instance.iframeForm()
-        instance.write('//div[@class="HTMLTabContainer"]/div[2]/div[16]/div[2]/input', f"{vencimento}")
+        instance.write('//div[@class="HTMLTabContainer"]/div[2]/div[16]/div[2]/input', f"{vencimento}" + Keys.TAB)
     except:
         instance.close()
         print(f"{error};{prefixo_log};Escrever Vencimento.")
         return f"{error};{prefixo_log};Escrever Vencimento."
+    
+    # Error vencimento
+    try:
+        instance.iframeForm()
+        instance.click('//div[@id="intTitleClose"]')
+        # Escrever Vencimento
+        try:
+            instance.iframeForm()
+            instance.write('//div[@class="HTMLTabContainer"]/div[2]/div[16]/div[2]/input', f"{vencimento}" + Keys.TAB)
+        except:
+            instance.close()
+            print(f"{error};{prefixo_log};Escrever Vencimento 2.")
+            return f"{error};{prefixo_log};Escrever Vencimento 2."
+    except:
+        pass
+    
+    # Error desconhecido
+    try:
+        instance.iframeForm()
+        instance.click('//div[@id="intTitleClose"]')
+    except:
+        pass
 
     # Botão Próxima etapa
     try:
         instance.iframeForm()
-        instance.click('//div[@class="HTMLTabContainer"]/div[2]//button[@title="Próxima etapa"]')
+        instance.click('//button[@title="Próxima etapa"]')
     except:
         instance.close()
         print(f"{error};{prefixo_log};Botão Próxima etapa.")
         return f"{error};{prefixo_log};Botão Próxima etapa."
-    
+
     # Selecionar Plano de contas
     try:
         instance.iframeForm()
         instance.click('//div[@class="HTMLTabContainer"]/div[3]/div[7]/div[2]/div')
         instance.write('//input[@id="lookupSearchQuery"]', f"%{plano_conta}" + Keys.ENTER)
-        instance.click('//select[@id="lookupInput"]/option[2]')
+        instance.click(f'//select[@id="lookupInput"]/option[@value="{plano_conta}"]')
     except:
         instance.close()
         print(f"{error};{prefixo_log};Selecionar Plano de contas.")
