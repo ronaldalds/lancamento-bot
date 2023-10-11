@@ -81,25 +81,25 @@ def handle_start_lancamento(client: Client, message: Message):
                 
                 def executar(arg: dict):
                     if running:
-                        id = arg.get("ID")
-                        mk: int = int(arg.get("MK"))
-                        credor: str = str(arg.get("CREDOR"))
-                        vencimento = formatar_data(arg.get("VENCIMENTO"))
-                        efetiva = formatar_data(arg.get("EFETIVA"))
-                        descricao: str = str(arg.get("DESCRICAO"))
-                        plano_conta: str = str(arg.get("PLANO_CONTA"))
-                        combinacao: str = str(arg.get("COMBINACAO"))
-                        negocio: str = str(arg.get("NEGOCIO"))
-                        valor: str = str(arg.get("VALOR"))
-                        conta: str = str(arg.get("CONTA"))
-
-                        warning = f"\033[93mWARNING\033[0m;LANÇAMENTO;{hora.strftime('%d/%m/%Y %H:%M')}"
-                        error = f"\033[91mERROR\033[0m;LANÇAMENTO;{hora.strftime('%d/%m/%Y %H:%M')}"
-                        sucess = f"\033[92mSUCESS\033[0m;LANÇAMENTO;{hora.strftime('%d/%m/%Y %H:%M')}"
-                        prefixo_log = f'ID:{id};Negócio:{negocio};Valor:{valor};Descrição:{descricao}'
-                        item = f"ID:{id}-MK:{mk}-Plano:{plano_conta[:14]}-Combinação:{combinacao[:9]}-Vct:{vencimento}-Efetiva:{efetiva}-Negócio:{negocio}-Valor:{valor.replace('.', ',')}-Descrição:{descricao}"
-
                         try:
+                            id = arg.get("ID")
+                            mk: int = int(arg.get("MK"))
+                            credor: str = str(arg.get("CREDOR"))
+                            vencimento = formatar_data(arg.get("VENCIMENTO"))
+                            efetiva = formatar_data(arg.get("EFETIVA"))
+                            descricao: str = str(arg.get("DESCRICAO"))
+                            plano_conta: str = str(arg.get("PLANO_CONTA"))
+                            combinacao: str = str(arg.get("COMBINACAO"))
+                            negocio: str = str(arg.get("NEGOCIO"))
+                            valor: str = str(arg.get("VALOR"))
+                            conta: str = str(arg.get("CONTA"))
+
+                            warning = f"\033[93mWARNING\033[0m;LANÇAMENTO;{hora.strftime('%d/%m/%Y %H:%M')}"
+                            error = f"\033[91mERROR\033[0m;LANÇAMENTO;{hora.strftime('%d/%m/%Y %H:%M')}"
+                            sucess = f"\033[92mSUCESS\033[0m;LANÇAMENTO;{hora.strftime('%d/%m/%Y %H:%M')}"
+                            prefixo_log = f'ID:{id};Negócio:{negocio};Valor:{valor};Descrição:{descricao}'
+                            item = f"ID:{id}-MK:{mk}-Plano:{plano_conta[:14]}-Combinação:{combinacao[:9]}-Vct:{vencimento}-Efetiva:{efetiva}-Negócio:{negocio}-Valor:{valor.replace('.', ',')}-Descrição:{descricao}"
+                        
                             print(f'Iniciou {item}')
                             return lancamento(
                                 mk = mk,
